@@ -4,61 +4,89 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>道館出席管理系統</title>
+<title>🥋 道館管理系統 Pro</title>
 
 <style>
 
 *{
+  margin:0;
+  padding:0;
   box-sizing:border-box;
   font-family:Arial;
 }
 
 body{
-  margin:0;
+  background:#111827;
+  color:white;
   padding:20px;
-  background:#f5f5f5;
 }
 
-h1,h2{
+h1{
   margin-bottom:20px;
+  font-size:32px;
 }
 
-.top-box,
-.calendar,
-.member{
-  background:white;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-.top-box{
+.top-bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
   margin-bottom:20px;
 }
 
 input,
 select,
 button{
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
+  padding:12px;
+  border:none;
+  border-radius:12px;
   font-size:16px;
-  margin:5px;
+}
+
+input,
+select{
+  background:#1f2937;
+  color:white;
 }
 
 button{
-  border:none;
-  background:#222;
+  background:#2563eb;
   color:white;
   cursor:pointer;
+  transition:0.2s;
 }
 
 button:hover{
   opacity:0.9;
 }
 
-.calendar{
-  margin-bottom:30px;
+.card{
+  background:#1f2937;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.stat-box{
+  background:#1f2937;
+  padding:20px;
+  border-radius:20px;
+}
+
+.stat-title{
+  color:#9ca3af;
+  margin-bottom:10px;
+}
+
+.stat-value{
+  font-size:32px;
+  font-weight:bold;
 }
 
 .calendar-header{
@@ -75,92 +103,95 @@ button:hover{
 }
 
 .day{
-  background:#ececec;
+  background:#374151;
   padding:15px;
-  text-align:center;
   border-radius:12px;
+  text-align:center;
   cursor:pointer;
   transition:0.2s;
 }
 
 .day:hover{
-  background:#ddd;
+  background:#4b5563;
 }
 
 .selected{
-  background:#222;
-  color:white;
+  background:#2563eb;
 }
 
 .member-list{
-  display:flex;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
   gap:20px;
 }
 
 .member{
-  width:220px;
-  min-height:240px;
+  background:#1f2937;
+  border-radius:20px;
+  padding:20px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
 }
 
 .member h3{
-  margin-top:0;
   margin-bottom:10px;
 }
 
+.member p{
+  margin:5px 0;
+}
+
 .paid{
-  color:green;
+  color:#22c55e;
   font-weight:bold;
 }
 
 .unpaid{
-  color:red;
+  color:#ef4444;
   font-weight:bold;
 }
 
-.status-select{
-  width:100%;
-  margin:10px 0;
-}
-
-.attendance-btn{
+.attend-btn{
   width:100%;
   margin-top:10px;
-  background:#11853b;
+  background:#16a34a;
 }
 
-.attendance-btn.off{
-  background:#999;
+.attend-btn.off{
+  background:#6b7280;
 }
 
 .delete-btn{
-  background:red;
+  width:100%;
   margin-top:10px;
+  background:#dc2626;
+}
+
+.search-box{
+  margin-bottom:20px;
   width:100%;
 }
 
-.class-count{
-  font-weight:bold;
-  margin-top:10px;
+.backup-btn{
+  background:#7c3aed;
 }
 
 @media(max-width:700px){
 
-  .member{
-    width:100%;
+  body{
+    padding:10px;
   }
 
-  .days{
-    grid-template-columns:repeat(7,1fr);
+  h1{
+    font-size:24px;
   }
 
   .day{
     padding:10px 0;
     font-size:14px;
   }
+
 }
 
 </style>
@@ -168,30 +199,65 @@ button:hover{
 
 <body>
 
-<h1>🥋 道館出席管理系統</h1>
+<h1>🥋 道館管理系統 Pro</h1>
 
-<div class="top-box">
+<div class="stats">
 
-  <input type="text" id="name" placeholder="學生姓名">
+  <div class="stat-box">
+    <div class="stat-title">學生總數</div>
+    <div class="stat-value" id="totalStudents">0</div>
+  </div>
 
-  <select id="plan">
-    <option value="2000">2000</option>
-    <option value="2500">2500</option>
-    <option value="3000">3000</option>
-    <option value="3500">3500</option>
-    <option value="4000">4000</option>
-  </select>
+  <div class="stat-box">
+    <div class="stat-title">本月收入</div>
+    <div class="stat-value" id="monthlyIncome">0</div>
+  </div>
 
-  <select id="paid">
-    <option value="已繳費">已繳費</option>
-    <option value="未繳費">未繳費</option>
-  </select>
-
-  <button onclick="addMember()">新增學生</button>
+  <div class="stat-box">
+    <div class="stat-title">今日出席</div>
+    <div class="stat-value" id="todayAttendance">0</div>
+  </div>
 
 </div>
 
-<div class="calendar">
+<div class="card">
+
+  <div class="top-bar">
+
+    <input type="text" id="name" placeholder="學生姓名">
+
+    <select id="plan">
+      <option value="2000">2000</option>
+      <option value="2500">2500</option>
+      <option value="3000">3000</option>
+      <option value="3500">3500</option>
+      <option value="4000">4000</option>
+    </select>
+
+    <select id="paid">
+      <option value="已繳費">已繳費</option>
+      <option value="未繳費">未繳費</option>
+    </select>
+
+    <button onclick="addMember()">新增學生</button>
+
+    <button class="backup-btn" onclick="backupData()">
+      備份資料
+    </button>
+
+  </div>
+
+  <input
+    type="text"
+    id="search"
+    class="search-box"
+    placeholder="搜尋學生..."
+    oninput="renderMembers()"
+  >
+
+</div>
+
+<div class="card">
 
   <div class="calendar-header">
 
@@ -206,8 +272,6 @@ button:hover{
   <div class="days" id="calendarDays"></div>
 
 </div>
-
-<h2>📋 學生列表</h2>
 
 <div class="member-list" id="memberList"></div>
 
@@ -270,6 +334,8 @@ function addMember(){
   document.getElementById("name").value="";
 
   renderMembers();
+
+  updateStats();
 }
 
 function deleteMember(id){
@@ -288,22 +354,26 @@ function deleteMember(id){
     saveData();
 
     renderMembers();
+
+    updateStats();
   }
 }
 
-function updatePaid(id, value){
+function updatePaid(id,value){
 
   const member =
     members.find(m=>m.id===id);
 
   if(member){
 
-    member.paid = value;
+    member.paid=value;
   }
 
   saveData();
 
   renderMembers();
+
+  updateStats();
 }
 
 function toggleAttendance(id){
@@ -330,18 +400,20 @@ function toggleAttendance(id){
   saveData();
 
   renderMembers();
+
+  updateStats();
 }
 
 function countMonthlyAttendance(id){
 
-  const currentMonth =
+  const month =
     selectedDate.slice(0,7);
 
-  let count = 0;
+  let count=0;
 
   for(let date in attendance){
 
-    if(date.startsWith(currentMonth)){
+    if(date.startsWith(month)){
 
       if(attendance[date].includes(id)){
 
@@ -358,9 +430,23 @@ function renderMembers(){
   const list =
     document.getElementById("memberList");
 
+  const search =
+    document.getElementById("search")
+    .value
+    .toLowerCase();
+
   list.innerHTML="";
 
-  members.forEach(member=>{
+  let filtered =
+    members.filter(m =>
+      m.name.toLowerCase().includes(search)
+    );
+
+  filtered.sort((a,b)=>
+    a.name.localeCompare(b.name)
+  );
+
+  filtered.forEach(member=>{
 
     const attended =
       attendance[selectedDate] &&
@@ -369,6 +455,11 @@ function renderMembers(){
 
     const total =
       countMonthlyAttendance(member.id);
+
+    const paidClass =
+      member.paid==="已繳費"
+      ? "paid"
+      : "unpaid";
 
     const div =
       document.createElement("div");
@@ -383,9 +474,12 @@ function renderMembers(){
 
         <p>方案：${member.plan}</p>
 
+        <p class="${paidClass}">
+          ${member.paid}
+        </p>
+
         <select
-          class="status-select"
-          onchange="updatePaid(${member.id}, this.value)"
+          onchange="updatePaid(${member.id},this.value)"
         >
 
           <option value="已繳費"
@@ -402,7 +496,7 @@ function renderMembers(){
 
         </select>
 
-        <p class="class-count">
+        <p>
           本月上課：${total} 堂
         </p>
 
@@ -411,10 +505,10 @@ function renderMembers(){
       <div>
 
         <button
-          class="attendance-btn ${attended ? "" : "off"}"
+          class="attend-btn ${attended ? "" : "off"}"
           onclick="toggleAttendance(${member.id})"
         >
-          ${attended ? "✅ 已出席" : "➕ 點我記錄出席"}
+          ${attended ? "✅ 已出席" : "➕ 記錄出席"}
         </button>
 
         <button
@@ -487,6 +581,8 @@ function renderCalendar(){
       renderCalendar();
 
       renderMembers();
+
+      updateStats();
     };
 
     daysContainer.appendChild(div);
@@ -511,9 +607,68 @@ function nextMonth(){
   renderCalendar();
 }
 
+function updateStats(){
+
+  document.getElementById(
+    "totalStudents"
+  ).innerText = members.length;
+
+  let income = 0;
+
+  members.forEach(member=>{
+
+    if(member.paid==="已繳費"){
+
+      income += Number(member.plan);
+    }
+  });
+
+  document.getElementById(
+    "monthlyIncome"
+  ).innerText =
+    "$" + income;
+
+  const todayCount =
+    attendance[selectedDate]
+    ? attendance[selectedDate].length
+    : 0;
+
+  document.getElementById(
+    "todayAttendance"
+  ).innerText =
+    todayCount;
+}
+
+function backupData(){
+
+  const data = {
+    members,
+    attendance
+  };
+
+  const blob =
+    new Blob(
+      [JSON.stringify(data)],
+      {type:"application/json"}
+    );
+
+  const a =
+    document.createElement("a");
+
+  a.href =
+    URL.createObjectURL(blob);
+
+  a.download =
+    "dojo_backup.json";
+
+  a.click();
+}
+
 renderCalendar();
 
 renderMembers();
+
+updateStats();
 
 </script>
 
