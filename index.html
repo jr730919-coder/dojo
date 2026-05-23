@@ -80,6 +80,7 @@ button:hover{
   text-align:center;
   border-radius:12px;
   cursor:pointer;
+  transition:0.2s;
 }
 
 .day:hover{
@@ -98,11 +99,16 @@ button:hover{
 }
 
 .member{
-  width:280px;
+  width:220px;
+  min-height:240px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 .member h3{
   margin-top:0;
+  margin-bottom:10px;
 }
 
 .paid{
@@ -113,6 +119,11 @@ button:hover{
 .unpaid{
   color:red;
   font-weight:bold;
+}
+
+.status-select{
+  width:100%;
+  margin:10px 0;
 }
 
 .attendance-btn{
@@ -129,6 +140,11 @@ button:hover{
   background:red;
   margin-top:10px;
   width:100%;
+}
+
+.class-count{
+  font-weight:bold;
+  margin-top:10px;
 }
 
 @media(max-width:700px){
@@ -361,41 +377,55 @@ function renderMembers(){
 
     div.innerHTML=`
 
-      <h3>${member.name}</h3>
+      <div>
 
-      <p>方案：${member.plan}</p>
+        <h3>${member.name}</h3>
 
-      <select onchange="updatePaid(${member.id}, this.value)">
+        <p>方案：${member.plan}</p>
 
-        <option value="已繳費"
-          ${member.paid==="已繳費" ? "selected" : ""}>
-          已繳費
-        </option>
+        <select
+          class="status-select"
+          onchange="updatePaid(${member.id}, this.value)"
+        >
 
-        <option value="未繳費"
-          ${member.paid==="未繳費" ? "selected" : ""}>
-          未繳費
-        </option>
+          <option value="已繳費"
+            ${member.paid==="已繳費" ? "selected" : ""}
+          >
+            已繳費
+          </option>
 
-      </select>
+          <option value="未繳費"
+            ${member.paid==="未繳費" ? "selected" : ""}
+          >
+            未繳費
+          </option>
 
-      <p>
-        本月上課：${total} 堂
-      </p>
+        </select>
 
-      <button
-        class="attendance-btn ${attended ? "" : "off"}"
-        onclick="toggleAttendance(${member.id})"
-      >
-        ${attended ? "✅ 已出席" : "➕ 點我記錄出席"}
-      </button>
+        <p class="class-count">
+          本月上課：${total} 堂
+        </p>
 
-      <button
-        class="delete-btn"
-        onclick="deleteMember(${member.id})"
-      >
-        刪除
-      </button>
+      </div>
+
+      <div>
+
+        <button
+          class="attendance-btn ${attended ? "" : "off"}"
+          onclick="toggleAttendance(${member.id})"
+        >
+          ${attended ? "✅ 已出席" : "➕ 點我記錄出席"}
+        </button>
+
+        <button
+          class="delete-btn"
+          onclick="deleteMember(${member.id})"
+        >
+          刪除
+        </button>
+
+      </div>
+
     `;
 
     list.appendChild(div);
