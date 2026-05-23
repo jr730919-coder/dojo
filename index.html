@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🥋 道館管理系統 Pro</title>
+<title>道館出席管理系統</title>
 
 <style>
 
 *{
+  box-sizing:border-box;
   margin:0;
   padding:0;
-  box-sizing:border-box;
-  font-family:"Microsoft JhengHei",sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 body{
-  background:#111827;
-  color:white;
+  background:#0f1115;
+  color:#fff;
   padding:20px;
 }
 
@@ -26,68 +26,71 @@ h1{
   font-size:32px;
 }
 
-.card{
-  background:#1f2937;
-  border-radius:20px;
+.top-box{
+  background:#1b1f27;
   padding:20px;
+  border-radius:20px;
   margin-bottom:20px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.3);
-}
-
-.top-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  display:flex;
+  flex-wrap:wrap;
   gap:10px;
+  align-items:center;
 }
 
 input,
 select,
 button{
-  width:100%;
-  padding:12px;
   border:none;
   border-radius:12px;
-  font-size:16px;
+  padding:12px;
+  font-size:15px;
 }
 
 input,
 select{
-  background:#374151;
+  background:#2b3140;
   color:white;
 }
 
 button{
-  background:#2563eb;
-  color:white;
   cursor:pointer;
-  transition:0.2s;
+  background:#4f8cff;
+  color:white;
+  font-weight:bold;
 }
 
 button:hover{
-  transform:scale(1.02);
+  opacity:0.9;
 }
 
 .stats{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   gap:15px;
   margin-bottom:20px;
 }
 
-.stat-box{
-  background:#1f2937;
-  padding:20px;
+.stat-card{
+  background:#1b1f27;
   border-radius:20px;
+  padding:20px;
 }
 
 .stat-title{
-  color:#9ca3af;
+  color:#aaa;
   margin-bottom:10px;
 }
 
 .stat-value{
   font-size:30px;
   font-weight:bold;
+}
+
+.calendar{
+  background:#1b1f27;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:20px;
 }
 
 .calendar-header{
@@ -97,54 +100,47 @@ button:hover{
   margin-bottom:20px;
 }
 
-.calendar-days{
+.days{
   display:grid;
   grid-template-columns:repeat(7,1fr);
   gap:10px;
 }
 
 .day{
-  background:#374151;
-  padding:15px;
-  border-radius:12px;
+  background:#2b3140;
+  padding:15px 0;
   text-align:center;
+  border-radius:12px;
   cursor:pointer;
-  transition:0.2s;
 }
 
 .day:hover{
-  background:#4b5563;
+  background:#3b4356;
 }
 
 .selected{
-  background:#2563eb;
+  background:#4f8cff;
 }
 
 .member-list{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:15px;
 }
 
 .member{
-  background:#1f2937;
+  background:#1b1f27;
   border-radius:20px;
-  padding:20px;
-  transition:0.2s;
-}
-
-.member:hover{
-  transform:translateY(-3px);
+  padding:18px;
 }
 
 .member h3{
-  margin-bottom:10px;
-  font-size:22px;
+  margin-bottom:12px;
 }
 
 .plan{
   margin-bottom:10px;
-  color:#d1d5db;
+  color:#7db4ff;
 }
 
 .paid{
@@ -153,61 +149,66 @@ button:hover{
 }
 
 .unpaid{
-  color:#ef4444;
+  color:#ff5d73;
   font-weight:bold;
 }
 
 .attendance-btn{
-  margin-top:15px;
-  background:#16a34a;
+  width:100%;
+  margin-top:12px;
+  background:#22c55e;
 }
 
 .attendance-btn.off{
-  background:#6b7280;
+  background:#444;
 }
 
 .delete-btn{
+  width:100%;
   margin-top:10px;
-  background:#dc2626;
+  background:#ff5d73;
 }
 
-.backup-btn{
-  background:#7c3aed;
+.detail-btn{
+  width:100%;
+  margin-top:10px;
+  background:#7c5cff;
 }
 
-.record-btn{
-  margin-top:10px;
-  background:#4b5563;
-}
-
-.record-box{
-  display:none;
-  margin-top:10px;
-  background:#111827;
-  padding:12px;
+.history{
+  margin-top:12px;
+  background:#2b3140;
   border-radius:12px;
-  line-height:1.8;
+  padding:12px;
+  display:none;
   font-size:14px;
+  line-height:1.8;
 }
 
 .search-box{
   margin-bottom:20px;
 }
 
-@media(max-width:768px){
+.search-box input{
+  width:100%;
+  padding:14px;
+}
 
-  h1{
-    font-size:24px;
+@media(max-width:700px){
+
+  .member-list{
+    grid-template-columns:1fr 1fr;
   }
 
-  .calendar-days{
-    gap:5px;
+  .days{
+    gap:6px;
   }
 
   .day{
     padding:10px 0;
     font-size:14px;
   }
+
 }
 
 </style>
@@ -215,68 +216,55 @@ button:hover{
 
 <body>
 
-<h1>🥋 道館管理系統 Pro</h1>
+<h1>🥋 道館出席管理系統</h1>
+
+<div class="top-box">
+
+  <input type="text" id="name" placeholder="學生姓名">
+
+  <select id="plan">
+    <option value="2000">2000</option>
+    <option value="2500">2500</option>
+    <option value="3000">3000</option>
+    <option value="3500">3500</option>
+    <option value="4000">4000</option>
+  </select>
+
+  <select id="paid">
+    <option value="已繳費">已繳費</option>
+    <option value="未繳費">未繳費</option>
+  </select>
+
+  <button onclick="addMember()">新增學生</button>
+
+  <button onclick="backupData()">一鍵備份</button>
+
+</div>
 
 <div class="stats">
 
-  <div class="stat-box">
+  <div class="stat-card">
     <div class="stat-title">學生總數</div>
-    <div class="stat-value" id="totalStudents">0</div>
+    <div class="stat-value" id="totalMembers">0</div>
   </div>
 
-  <div class="stat-box">
+  <div class="stat-card">
     <div class="stat-title">本月收入</div>
     <div class="stat-value" id="monthlyIncome">0</div>
   </div>
 
-  <div class="stat-box">
-    <div class="stat-title">本日出席</div>
+  <div class="stat-card">
+    <div class="stat-title">今日出席</div>
     <div class="stat-value" id="todayAttendance">0</div>
   </div>
 
 </div>
 
-<div class="card">
-
-  <div class="top-grid">
-
-    <input type="text" id="name" placeholder="學生姓名">
-
-    <select id="plan">
-      <option value="2000">2000</option>
-      <option value="2500">2500</option>
-      <option value="3000">3000</option>
-      <option value="3500">3500</option>
-      <option value="4000">4000</option>
-    </select>
-
-    <select id="paid">
-      <option value="已繳費">已繳費</option>
-      <option value="未繳費">未繳費</option>
-    </select>
-
-    <button onclick="addMember()">新增學生</button>
-
-    <button class="backup-btn" onclick="backupData()">
-      備份資料
-    </button>
-
-  </div>
-
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="搜尋學生..." oninput="renderMembers()">
 </div>
 
-<div class="card search-box">
-
-  <input
-    type="text"
-    id="searchInput"
-    placeholder="搜尋學生..."
-    oninput="renderMembers()"
-  >
-
-</div>
-
-<div class="card">
+<div class="calendar">
 
   <div class="calendar-header">
 
@@ -288,7 +276,7 @@ button:hover{
 
   </div>
 
-  <div class="calendar-days" id="calendarDays"></div>
+  <div class="days" id="calendarDays"></div>
 
 </div>
 
@@ -335,7 +323,7 @@ function addMember(){
   const paid =
     document.getElementById("paid").value;
 
-  if(name === ""){
+  if(!name){
 
     alert("請輸入學生姓名");
     return;
@@ -343,10 +331,12 @@ function addMember(){
 
   members.push({
     id:Date.now(),
-    name:name,
-    plan:plan,
-    paid:paid
+    name,
+    plan,
+    paid
   });
+
+  members.sort((a,b)=>a.name.localeCompare(b.name));
 
   saveData();
 
@@ -361,13 +351,12 @@ function deleteMember(id){
   if(confirm("確定刪除？")){
 
     members =
-      members.filter(m => m.id !== id);
+      members.filter(m=>m.id!==id);
 
     for(let date in attendance){
 
       attendance[date] =
-        attendance[date]
-        .filter(mid => mid !== id);
+        attendance[date].filter(mid=>mid!==id);
     }
 
     saveData();
@@ -377,10 +366,10 @@ function deleteMember(id){
   }
 }
 
-function updatePaid(id,value){
+function updatePaid(id, value){
 
   const member =
-    members.find(m => m.id === id);
+    members.find(m=>m.id===id);
 
   if(member){
 
@@ -397,7 +386,7 @@ function toggleAttendance(id){
 
   if(!attendance[selectedDate]){
 
-    attendance[selectedDate] = [];
+    attendance[selectedDate]=[];
   }
 
   const exists =
@@ -407,7 +396,7 @@ function toggleAttendance(id){
 
     attendance[selectedDate] =
       attendance[selectedDate]
-      .filter(mid => mid !== id);
+      .filter(mid=>mid!==id);
 
   }else{
 
@@ -422,14 +411,14 @@ function toggleAttendance(id){
 
 function countMonthlyAttendance(id){
 
-  const month =
+  const currentMonth =
     selectedDate.slice(0,7);
 
   let count = 0;
 
   for(let date in attendance){
 
-    if(date.startsWith(month)){
+    if(date.startsWith(currentMonth)){
 
       if(attendance[date].includes(id)){
 
@@ -443,36 +432,37 @@ function countMonthlyAttendance(id){
 
 function getAttendanceDates(id){
 
-  const month =
+  const currentMonth =
     selectedDate.slice(0,7);
 
   let dates = [];
 
   for(let date in attendance){
 
-    if(
-      date.startsWith(month) &&
-      attendance[date].includes(id)
-    ){
-      dates.push(date);
+    if(date.startsWith(currentMonth)){
+
+      if(attendance[date].includes(id)){
+
+        dates.push(date.split("-")[2]+"日");
+      }
     }
   }
 
-  return dates.sort();
+  return dates;
 }
 
-function toggleRecord(id){
+function toggleHistory(id){
 
   const box =
-    document.getElementById(`record-${id}`);
+    document.getElementById("history-"+id);
 
-  if(box.style.display === "none"){
+  if(box.style.display==="block"){
 
-    box.style.display = "block";
+    box.style.display="none";
 
   }else{
 
-    box.style.display = "none";
+    box.style.display="block";
   }
 }
 
@@ -481,26 +471,16 @@ function renderMembers(){
   const list =
     document.getElementById("memberList");
 
-  const search =
+  const keyword =
     document.getElementById("searchInput")
     .value
-    .toLowerCase();
+    .trim();
 
-  list.innerHTML = "";
+  list.innerHTML="";
 
-  const sortedMembers =
-    [...members]
-    .sort((a,b)=>a.name.localeCompare(b.name));
-
-  sortedMembers.forEach(member=>{
-
-    if(
-      !member.name
-      .toLowerCase()
-      .includes(search)
-    ){
-      return;
-    }
+  members
+  .filter(m=>m.name.includes(keyword))
+  .forEach(member=>{
 
     const attended =
       attendance[selectedDate] &&
@@ -510,44 +490,41 @@ function renderMembers(){
     const total =
       countMonthlyAttendance(member.id);
 
-    const paidClass =
-      member.paid === "已繳費"
-      ? "paid"
-      : "unpaid";
-
-    const records =
+    const dates =
       getAttendanceDates(member.id);
 
     const div =
       document.createElement("div");
 
-    div.className = "member";
+    div.className="member";
 
-    div.innerHTML = `
+    div.innerHTML=`
 
       <h3>${member.name}</h3>
 
       <div class="plan">
-        方案：${member.plan}
+        月費：${member.plan}
       </div>
 
-      <div class="${paidClass}">
+      <div class="${
+        member.paid==="已繳費"
+        ? "paid"
+        : "unpaid"
+      }">
         ${member.paid}
       </div>
 
       <br>
 
-      <select onchange="updatePaid(${member.id},this.value)">
+      <select onchange="updatePaid(${member.id}, this.value)">
 
         <option value="已繳費"
-          ${member.paid==="已繳費" ? "selected" : ""}
-        >
+          ${member.paid==="已繳費" ? "selected" : ""}>
           已繳費
         </option>
 
         <option value="未繳費"
-          ${member.paid==="未繳費" ? "selected" : ""}
-        >
+          ${member.paid==="未繳費" ? "selected" : ""}>
           未繳費
         </option>
 
@@ -558,53 +535,49 @@ function renderMembers(){
       </p>
 
       <button
-        class="record-btn"
-        onclick="toggleRecord(${member.id})"
-      >
-        📅 查看出席紀錄
-      </button>
-
-      <div
-        class="record-box"
-        id="record-${member.id}"
-      >
-        ${
-          records.length
-          ?
-          records.map(d=>`• ${d}`).join("<br>")
-          :
-          "本月尚無出席紀錄"
-        }
-      </div>
-
-      <button
         class="attendance-btn ${attended ? "" : "off"}"
         onclick="toggleAttendance(${member.id})"
       >
-        ${attended ? "✅ 已出席" : "➕ 記錄出席"}
+        ${attended ? "✅ 今日已出席" : "➕ 點名"}
       </button>
+
+      <button
+        class="detail-btn"
+        onclick="toggleHistory(${member.id})"
+      >
+        📅 查看本月紀錄
+      </button>
+
+      <div
+        class="history"
+        id="history-${member.id}"
+      >
+        ${
+          dates.length
+          ? dates.join("、")
+          : "本月尚無出席紀錄"
+        }
+      </div>
 
       <button
         class="delete-btn"
         onclick="deleteMember(${member.id})"
       >
-        刪除
+        刪除學生
       </button>
 
     `;
 
     list.appendChild(div);
-
   });
-
 }
 
 function renderCalendar(){
 
-  const container =
+  const daysContainer =
     document.getElementById("calendarDays");
 
-  container.innerHTML = "";
+  daysContainer.innerHTML="";
 
   const year =
     currentDate.getFullYear();
@@ -627,7 +600,7 @@ function renderCalendar(){
     const empty =
       document.createElement("div");
 
-    container.appendChild(empty);
+    daysContainer.appendChild(empty);
   }
 
   for(let day=1;day<=daysInMonth;day++){
@@ -635,28 +608,30 @@ function renderCalendar(){
     const div =
       document.createElement("div");
 
-    div.className = "day";
+    div.className="day";
 
     const date =
       `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 
-    if(date === selectedDate){
+    if(date===selectedDate){
 
       div.classList.add("selected");
     }
 
-    div.innerText = day;
+    div.innerText=day;
 
-    div.onclick = ()=>{
+    div.onclick=()=>{
 
-      selectedDate = date;
+      selectedDate=date;
 
       renderCalendar();
+
       renderMembers();
+
       updateStats();
     };
 
-    container.appendChild(div);
+    daysContainer.appendChild(div);
   }
 }
 
@@ -681,32 +656,34 @@ function nextMonth(){
 function updateStats(){
 
   document.getElementById(
-    "totalStudents"
+    "totalMembers"
   ).innerText =
     members.length;
 
+  const paidMembers =
+    members.filter(
+      m=>m.paid==="已繳費"
+    );
+
   let income = 0;
 
-  members.forEach(member=>{
+  paidMembers.forEach(m=>{
 
-    if(member.paid==="已繳費"){
-
-      income += Number(member.plan);
-    }
+    income += Number(m.plan);
   });
 
   document.getElementById(
     "monthlyIncome"
   ).innerText =
-    "$" + income;
+    "$"+income;
 
-  const todayList =
+  const today =
     attendance[selectedDate] || [];
 
   document.getElementById(
     "todayAttendance"
   ).innerText =
-    todayList.length;
+    today.length;
 }
 
 function backupData(){
@@ -716,11 +693,10 @@ function backupData(){
     attendance
   };
 
-  const blob =
-    new Blob(
-      [JSON.stringify(data,null,2)],
-      {type:"application/json"}
-    );
+  const blob = new Blob(
+    [JSON.stringify(data)],
+    {type:"application/json"}
+  );
 
   const a =
     document.createElement("a");
@@ -735,9 +711,7 @@ function backupData(){
 }
 
 renderCalendar();
-
 renderMembers();
-
 updateStats();
 
 </script>
