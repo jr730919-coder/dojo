@@ -1,844 +1,405 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>道館點名系統 Pro+</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>道館出席管理系統</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *{
+      box-sizing:border-box;
+      font-family:Arial;
+    }
 
-<style>
+    body{
+      margin:0;
+      background:#f5f5f5;
+      padding:20px;
+    }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+    }
 
-body{
-  background:#0f172a;
-  color:white;
-  font-family:'Noto Sans TC',sans-serif;
-  padding:20px;
-}
+    .top-box{
+      background:white;
+      padding:15px;
+      border-radius:15px;
+      margin-bottom:20px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
 
-.container{
-  max-width:1300px;
-  margin:auto;
-}
+    input,select,button{
+      padding:10px;
+      margin:5px;
+      border-radius:10px;
+      border:1px solid #ccc;
+      font-size:16px;
+    }
 
-h1{
-  margin-bottom:20px;
-}
+    button{
+      background:#222;
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
 
-.topbar{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
-}
+    button:hover{
+      opacity:0.9;
+    }
 
-button{
-  border:none;
-  border-radius:12px;
-  padding:10px 16px;
-  cursor:pointer;
-  font-weight:bold;
-}
+    .calendar{
+      background:white;
+      padding:15px;
+      border-radius:15px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom:20px;
+    }
 
-.btn-green{
-  background:#22c55e;
-  color:black;
-}
+    .calendar-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
 
-.btn-blue{
-  background:#3b82f6;
-  color:white;
-}
+    .days{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:5px;
+    }
 
-.btn-red{
-  background:#ef4444;
-  color:white;
-}
+    .day{
+      background:#eee;
+      padding:15px;
+      text-align:center;
+      border-radius:10px;
+      cursor:pointer;
+    }
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:10px;
-  margin-bottom:20px;
-}
+    .day:hover{
+      background:#d9d9d9;
+    }
 
-.card{
-  background:#1e293b;
-  border-radius:20px;
-  padding:20px;
-}
+    .selected{
+      background:#222;
+      color:white;
+    }
 
-.card h3{
-  font-size:14px;
-  color:#94a3b8;
-  margin-bottom:8px;
-}
+    .member-list{
+      display:grid;
+      gap:15px;
+    }
 
-.value{
-  font-size:32px;
-  font-weight:bold;
-}
+    .member{
+      background:white;
+      padding:15px;
+      border-radius:15px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
 
-.calendar{
-  background:#1e293b;
-  border-radius:20px;
-  padding:20px;
-  margin-bottom:20px;
-}
+    .member-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+    }
 
-.calendar-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:16px;
-}
+    .attendance-btn{
+      margin-top:10px;
+      width:100%;
+      background:#0b7d32;
+    }
 
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:8px;
-}
+    .attendance-btn.off{
+      background:#999;
+    }
 
-.day-name{
-  text-align:center;
-  color:#94a3b8;
-  font-size:13px;
-}
+    .delete-btn{
+      background:red;
+    }
 
-.day{
-  background:#0f172a;
-  border-radius:14px;
-  min-height:90px;
-  padding:8px;
-  cursor:pointer;
-  transition:.2s;
-  border:2px solid transparent;
-}
+    .paid{
+      color:green;
+      font-weight:bold;
+    }
 
-.day:hover{
-  transform:translateY(-2px);
-}
+    .unpaid{
+      color:red;
+      font-weight:bold;
+    }
 
-.day.active{
-  border-color:#22c55e;
-}
+    @media(max-width:600px){
+      .days{
+        grid-template-columns:repeat(7,1fr);
+      }
 
-.day-number{
-  font-size:14px;
-  margin-bottom:8px;
-}
-
-.day-count{
-  font-size:12px;
-  color:#94a3b8;
-}
-
-.day.present{
-  background:rgba(34,197,94,.15);
-}
-
-.day.empty{
-  opacity:.2;
-  pointer-events:none;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:10px;
-}
-
-.student{
-  background:#1e293b;
-  border-radius:18px;
-  padding:16px;
-  cursor:pointer;
-  transition:.2s;
-  position:relative;
-}
-
-.student:hover{
-  transform:translateY(-2px);
-}
-
-.student.present{
-  border:2px solid #22c55e;
-}
-
-.student.absent{
-  border:2px solid #ef4444;
-}
-
-.student h2{
-  font-size:20px;
-  margin-bottom:10px;
-}
-
-.student p{
-  color:#94a3b8;
-  font-size:14px;
-  margin-bottom:4px;
-}
-
-.status{
-  position:absolute;
-  top:10px;
-  right:10px;
-  font-size:22px;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-content{
-  width:360px;
-  background:#1e293b;
-  padding:24px;
-  border-radius:24px;
-}
-
-.form-group{
-  margin-bottom:14px;
-}
-
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-}
-
-input,select{
-  width:100%;
-  height:44px;
-  border:none;
-  border-radius:12px;
-  padding:0 12px;
-  background:#0f172a;
-  color:white;
-}
-
-.toast{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#1e293b;
-  padding:12px 20px;
-  border-radius:14px;
-  display:none;
-}
-
-</style>
+      .day{
+        padding:10px 0;
+        font-size:14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+<h1>🥋 道館出席管理系統</h1>
 
-<h1>🥋 道館點名系統 Pro+</h1>
+<div class="top-box">
+  <h3>新增學生</h3>
 
-<div class="topbar">
+  <input type="text" id="name" placeholder="學生姓名">
 
-  <button class="btn-green" onclick="openModal()">
-    ＋ 新增學生
-  </button>
+  <select id="plan">
+    <option value="2000">2000</option>
+    <option value="2500">2500</option>
+    <option value="3000">3000</option>
+    <option value="3500">3500</option>
+    <option value="4000">4000</option>
+  </select>
 
-  <button class="btn-blue" onclick="exportData()">
-    ⬇ 備份
-  </button>
+  <select id="paid">
+    <option value="已繳費">已繳費</option>
+    <option value="未繳費">未繳費</option>
+  </select>
 
-  <button class="btn-red" onclick="clearCurrentDay()">
-    清除當日點名
-  </button>
-
-</div>
-
-<div class="stats">
-
-  <div class="card">
-    <h3>總學生數</h3>
-    <div class="value" id="totalStudent">0</div>
-  </div>
-
-  <div class="card">
-    <h3>當日出席</h3>
-    <div class="value" id="todayPresent">0</div>
-  </div>
-
-  <div class="card">
-    <h3>當日缺席</h3>
-    <div class="value" id="todayAbsent">0</div>
-  </div>
-
-  <div class="card">
-    <h3>本月收入</h3>
-    <div class="value" id="income">0</div>
-  </div>
-
+  <button onclick="addMember()">新增學生</button>
 </div>
 
 <div class="calendar">
-
   <div class="calendar-header">
-
-    <button onclick="changeMonth(-1)">◀</button>
-
-    <h2 id="monthLabel"></h2>
-
-    <button onclick="changeMonth(1)">▶</button>
-
+    <button onclick="prevMonth()">⬅</button>
+    <h2 id="monthYear"></h2>
+    <button onclick="nextMonth()">➡</button>
   </div>
 
-  <div class="calendar-grid">
-
-    <div class="day-name">日</div>
-    <div class="day-name">一</div>
-    <div class="day-name">二</div>
-    <div class="day-name">三</div>
-    <div class="day-name">四</div>
-    <div class="day-name">五</div>
-    <div class="day-name">六</div>
-
-  </div>
-
-  <div class="calendar-grid" id="calendarGrid"></div>
-
+  <div class="days" id="calendarDays"></div>
 </div>
 
-<div class="grid" id="studentGrid"></div>
+<h2>📋 學生列表</h2>
 
-</div>
-
-<!-- MODAL -->
-
-<div class="modal" id="modal">
-
-  <div class="modal-content">
-
-    <h2 style="margin-bottom:20px">新增學生</h2>
-
-    <div class="form-group">
-      <label>姓名</label>
-      <input type="text" id="name">
-    </div>
-
-    <div class="form-group">
-
-      <label>方案</label>
-
-      <select id="planType" onchange="toggleRemain()">
-        <option value="monthly">月繳</option>
-        <option value="season">季繳</option>
-        <option value="session">次卡</option>
-      </select>
-
-    </div>
-
-    <div class="form-group">
-      <label>金額</label>
-      <input type="number" id="planValue">
-    </div>
-
-    <div class="form-group" id="remainBox" style="display:none">
-      <label>剩餘堂數</label>
-      <input type="number" id="remain">
-    </div>
-
-    <div style="display:flex;gap:10px;margin-top:20px">
-
-      <button style="flex:1" onclick="closeModal()">
-        取消
-      </button>
-
-      <button class="btn-green" style="flex:1" onclick="addStudent()">
-        新增
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-<div class="toast" id="toast"></div>
+<div class="member-list" id="memberList"></div>
 
 <script>
 
-let students = JSON.parse(localStorage.getItem('dojo_students') || '[]');
+let members = JSON.parse(localStorage.getItem("dojo_members")) || [];
 
-let attendance = JSON.parse(localStorage.getItem('dojo_attendance') || '{}');
+let attendance = JSON.parse(localStorage.getItem("dojo_attendance")) || {};
 
 let currentDate = new Date();
 
-let selectedDate = formatDate(currentDate);
+let selectedDate = formatDate(new Date());
+
+function saveData(){
+  localStorage.setItem("dojo_members", JSON.stringify(members));
+  localStorage.setItem("dojo_attendance", JSON.stringify(attendance));
+}
 
 function formatDate(date){
-
-  return date.toISOString().split('T')[0];
-
+  return date.toISOString().split("T")[0];
 }
 
-function save(){
+function addMember(){
 
-  localStorage.setItem(
-    'dojo_students',
-    JSON.stringify(students)
-  );
-
-  localStorage.setItem(
-    'dojo_attendance',
-    JSON.stringify(attendance)
-  );
-
-}
-
-function toast(msg){
-
-  const t=document.getElementById('toast');
-
-  t.innerText=msg;
-
-  t.style.display='block';
-
-  clearTimeout(t.timer);
-
-  t.timer=setTimeout(()=>{
-    t.style.display='none';
-  },2000);
-
-}
-
-function openModal(){
-
-  document.getElementById('modal').style.display='flex';
-
-}
-
-function closeModal(){
-
-  document.getElementById('modal').style.display='none';
-
-}
-
-function toggleRemain(){
-
-  const type=document.getElementById('planType').value;
-
-  document.getElementById('remainBox').style.display =
-    type==='session' ? 'block' : 'none';
-
-}
-
-function addStudent(){
-
-  const name=document.getElementById('name').value.trim();
+  const name = document.getElementById("name").value.trim();
+  const plan = document.getElementById("plan").value;
+  const paid = document.getElementById("paid").value;
 
   if(!name){
-
-    alert('請輸入姓名');
-
+    alert("請輸入學生姓名");
     return;
-
   }
 
-  students.push({
-
+  members.push({
     id:Date.now(),
-
     name,
-
-    planType:document.getElementById('planType').value,
-
-    planValue:document.getElementById('planValue').value,
-
-    remain:document.getElementById('remain').value || 0
-
+    plan,
+    paid
   });
 
-  save();
+  saveData();
 
-  render();
+  document.getElementById("name").value="";
 
-  closeModal();
-
-  document.getElementById('name').value='';
-  document.getElementById('planValue').value='';
-  document.getElementById('remain').value='';
-
-  toast('新增成功');
-
+  renderMembers();
 }
 
-function getPlanText(s){
+function deleteMember(id){
 
-  if(s.planType==='monthly'){
-    return `💰 月繳 ${s.planValue}`;
+  if(confirm("確定刪除？")){
+
+    members = members.filter(m=>m.id!==id);
+
+    for(let date in attendance){
+      attendance[date] = attendance[date].filter(mid=>mid!==id);
+    }
+
+    saveData();
+    renderMembers();
   }
-
-  if(s.planType==='season'){
-    return `📅 季繳 ${s.planValue}`;
-  }
-
-  if(s.planType==='session'){
-    return `🎫 次卡 ${s.remain} 堂`;
-  }
-
-  return '';
-
 }
 
 function toggleAttendance(id){
 
   if(!attendance[selectedDate]){
-
-    attendance[selectedDate]={};
-
+    attendance[selectedDate]=[];
   }
 
-  const current=attendance[selectedDate][id];
+  const exists = attendance[selectedDate].includes(id);
 
-  if(!current){
-
-    attendance[selectedDate][id]='present';
-
-    const s=students.find(x=>x.id===id);
-
-    if(s.planType==='session'){
-
-      let remain=parseInt(s.remain);
-
-      if(remain>0){
-
-        s.remain=remain-1;
-
-      }
-
-    }
-
-  }else if(current==='present'){
-
-    attendance[selectedDate][id]='absent';
-
+  if(exists){
+    attendance[selectedDate] =
+      attendance[selectedDate].filter(mid=>mid!==id);
   }else{
-
-    delete attendance[selectedDate][id];
-
+    attendance[selectedDate].push(id);
   }
 
-  save();
-
-  render();
-
+  saveData();
+  renderMembers();
 }
 
-function editStudent(id){
+function countMonthlyAttendance(id){
 
-  const s=students.find(x=>x.id===id);
+  const now = selectedDate.slice(0,7);
 
-  if(!s) return;
+  let count = 0;
 
-  const name=prompt('姓名',s.name);
+  for(let date in attendance){
 
-  if(name===null) return;
+    if(date.startsWith(now)){
 
-  const type=prompt(
-`方案：
-monthly = 月繳
-season = 季繳
-session = 次卡`,
-s.planType
-);
-
-  if(type===null) return;
-
-  const value=prompt('金額',s.planValue);
-
-  if(value===null) return;
-
-  let remain=s.remain;
-
-  if(type==='session'){
-
-    remain=prompt('剩餘堂數',s.remain);
-
-    if(remain===null) return;
-
+      if(attendance[date].includes(id)){
+        count++;
+      }
+    }
   }
 
-  s.name=name;
-  s.planType=type;
-  s.planValue=value;
-  s.remain=remain;
-
-  save();
-
-  render();
-
-  toast('修改成功');
-
+  return count;
 }
 
-function deleteStudent(id){
+function renderMembers(){
 
-  if(!confirm('確定刪除？')) return;
+  const list = document.getElementById("memberList");
 
-  students=students.filter(x=>x.id!==id);
+  list.innerHTML="";
 
-  Object.keys(attendance).forEach(d=>{
+  members.forEach(member=>{
 
-    delete attendance[d][id];
+    const attended =
+      attendance[selectedDate] &&
+      attendance[selectedDate].includes(member.id);
 
+    const total = countMonthlyAttendance(member.id);
+
+    const div = document.createElement("div");
+
+    div.className="member";
+
+    div.innerHTML=`
+      <div class="member-top">
+
+        <div>
+          <h3>${member.name}</h3>
+
+          <p>方案：${member.plan}</p>
+
+          <p class="${member.paid==="已繳費" ? "paid":"unpaid"}">
+            ${member.paid}
+          </p>
+
+          <p>本月上課：${total} 堂</p>
+        </div>
+
+        <div>
+          <button class="delete-btn"
+            onclick="deleteMember(${member.id})">
+            刪除
+          </button>
+        </div>
+
+      </div>
+
+      <button
+        class="attendance-btn ${attended ? "" : "off"}"
+        onclick="toggleAttendance(${member.id})"
+      >
+        ${attended ? "✅ 已出席" : "➕ 點我記錄出席"}
+      </button>
+    `;
+
+    list.appendChild(div);
   });
-
-  save();
-
-  render();
-
-}
-
-function clearCurrentDay(){
-
-  if(!confirm('清除當日點名？')) return;
-
-  attendance[selectedDate]={};
-
-  save();
-
-  render();
-
-}
-
-function exportData(){
-
-  const data={
-
-    students,
-    attendance
-
-  };
-
-  const blob=new Blob(
-    [JSON.stringify(data,null,2)],
-    {type:'application/json'}
-  );
-
-  const a=document.createElement('a');
-
-  a.href=URL.createObjectURL(blob);
-
-  a.download='dojo_backup.json';
-
-  a.click();
-
-  toast('備份成功');
-
-}
-
-function changeMonth(dir){
-
-  currentDate.setMonth(
-    currentDate.getMonth()+dir
-  );
-
-  renderCalendar();
-
 }
 
 function renderCalendar(){
 
-  const grid=document.getElementById('calendarGrid');
+  const daysContainer =
+    document.getElementById("calendarDays");
 
-  grid.innerHTML='';
+  daysContainer.innerHTML="";
 
-  const y=currentDate.getFullYear();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
-  const m=currentDate.getMonth();
+  document.getElementById("monthYear").innerText =
+    `${year} 年 ${month+1} 月`;
 
-  document.getElementById('monthLabel').innerText=
-    `${y} 年 ${m+1} 月`;
+  const firstDay = new Date(year,month,1).getDay();
 
-  const firstDay=new Date(y,m,1).getDay();
-
-  const totalDays=new Date(y,m+1,0).getDate();
+  const daysInMonth =
+    new Date(year,month+1,0).getDate();
 
   for(let i=0;i<firstDay;i++){
 
-    const empty=document.createElement('div');
-
-    empty.className='day empty';
-
-    grid.appendChild(empty);
-
+    const empty = document.createElement("div");
+    daysContainer.appendChild(empty);
   }
 
-  for(let d=1;d<=totalDays;d++){
+  for(let day=1; day<=daysInMonth; day++){
 
-    const dateStr=
-      `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const div = document.createElement("div");
 
-    const div=document.createElement('div');
+    div.className="day";
 
-    div.className='day';
+    const date =
+      `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 
-    if(dateStr===selectedDate){
-
-      div.classList.add('active');
-
+    if(date===selectedDate){
+      div.classList.add("selected");
     }
 
-    const presentCount=
-      Object.values(attendance[dateStr] || {})
-      .filter(v=>v==='present').length;
-
-    if(presentCount>0){
-
-      div.classList.add('present');
-
-    }
-
-    div.innerHTML=`
-
-      <div class="day-number">
-        ${d}
-      </div>
-
-      <div class="day-count">
-        👥 ${presentCount}
-      </div>
-
-    `;
+    div.innerText=day;
 
     div.onclick=()=>{
 
-      selectedDate=dateStr;
+      selectedDate=date;
 
-      render();
-
+      renderCalendar();
+      renderMembers();
     };
 
-    grid.appendChild(div);
-
+    daysContainer.appendChild(div);
   }
-
 }
 
-function render(){
+function prevMonth(){
+
+  currentDate.setMonth(currentDate.getMonth()-1);
 
   renderCalendar();
-
-  document.getElementById('totalStudent').innerText=
-    students.length;
-
-  let p=0;
-  let a=0;
-
-  Object.values(attendance[selectedDate] || {})
-  .forEach(v=>{
-
-    if(v==='present') p++;
-
-    if(v==='absent') a++;
-
-  });
-
-  document.getElementById('todayPresent').innerText=p;
-
-  document.getElementById('todayAbsent').innerText=a;
-
-  let income=0;
-
-  students.forEach(s=>{
-
-    income += parseInt(s.planValue || 0);
-
-  });
-
-  document.getElementById('income').innerText=
-    '$'+income;
-
-  const grid=document.getElementById('studentGrid');
-
-  grid.innerHTML='';
-
-  students.forEach(s=>{
-
-    const status=
-      attendance[selectedDate]?.[s.id];
-
-    const div=document.createElement('div');
-
-    div.className='student';
-
-    if(status){
-
-      div.classList.add(status);
-
-    }
-
-    div.innerHTML=`
-
-      <div class="status">
-
-        ${status==='present'
-          ? '✅'
-          : status==='absent'
-          ? '❌'
-          : ''}
-
-      </div>
-
-      <h2>${s.name}</h2>
-
-      <p>${getPlanText(s)}</p>
-
-      <div style="
-        display:flex;
-        gap:8px;
-        margin-top:12px;
-      ">
-
-        <button
-          onclick="event.stopPropagation();
-          editStudent(${s.id})">
-
-          修改
-
-        </button>
-
-        <button
-          class="btn-red"
-          onclick="event.stopPropagation();
-          deleteStudent(${s.id})">
-
-          刪除
-
-        </button>
-
-      </div>
-
-    `;
-
-    div.onclick=()=>toggleAttendance(s.id);
-
-    grid.appendChild(div);
-
-  });
-
 }
 
-render();
+function nextMonth(){
+
+  currentDate.setMonth(currentDate.getMonth()+1);
+
+  renderCalendar();
+}
+
+renderCalendar();
+renderMembers();
 
 </script>
 
